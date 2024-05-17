@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ChessboardView">
+        <attr name="darkColor" format="color"/>
+        <attr name="brightColor" format="color"/>
+        <attr name="linesColor" format="color"/>
+        <attr name="linesWidth" format="float"/>
+    </declare-styleable>
+</resources>
