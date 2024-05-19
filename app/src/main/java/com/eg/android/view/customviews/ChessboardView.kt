@@ -19,31 +19,98 @@ class ChessboardView(context: Context, attrs: AttributeSet): View(context, attrs
     private var brightColor: Int
     private var darkColor: Int
 
-    // Разница между каждым квадратом
+    // Разница между каждой клеткой
     private var delta: Int = 0
 
-    // Переменные для определения границ квадратов, которые необходимо нарисовать
+    // Переменные для определения границ клеток, которые нужно рисовать
     var selectedSquareBounds: Rect = Rect(0, 0, 0, 0)
     var availableMovesBounds: MutableList<Rect> = mutableListOf()
 
     // Карты для инициализации позиций фигур и отслеживания их
-    var whitePlayerPieces: MutableMap<Int, Pair<String, Pair<Int, Int>>> = mutableMapOf()
-    var blackPlayerPieces: MutableMap<Int, Pair<String, Pair<Int, Int>>> = mutableMapOf()
+    var whitePlayerPieces: MutableMap<Int, Pair<String, Pair<Int, Int>>> = mutableMapOf(
+        -1 to Pair("King", Pair(7, 4)),
+        -2 to Pair("Queen", Pair(7, 3)),
+        -3 to Pair("Rook", Pair(7, 0)),
+        -4 to Pair("Rook", Pair(7, 7)),
+        -5 to Pair("Knight", Pair(7, 1)),
+        -6 to Pair("Knight", Pair(7, 6)),
+        -7 to Pair("Bishop", Pair(7, 2)),
+        -8 to Pair("Bishop", Pair(7, 5)),
+        -9 to Pair("Pawn", Pair(6, 0)),
+        -10 to Pair("Pawn", Pair(6, 1)),
+        -11 to Pair("Pawn", Pair(6, 2)),
+        -12 to Pair("Pawn", Pair(6, 3)),
+        -13 to Pair("Pawn", Pair(6, 4)),
+        -14 to Pair("Pawn", Pair(6, 5)),
+        -15 to Pair("Pawn", Pair(6, 6)),
+        -16 to Pair("Pawn", Pair(6, 7)),
+    )
+    var blackPlayerPieces: MutableMap<Int, Pair<String, Pair<Int, Int>>> = mutableMapOf(
+        1 to Pair("King", Pair(0, 4)),
+        2 to Pair("Queen", Pair(0, 3)),
+        3 to Pair("Rook", Pair(0, 0)),
+        4 to Pair("Rook", Pair(0, 7)),
+        5 to Pair("Knight", Pair(0, 1)),
+        6 to Pair("Knight", Pair(0, 6)),
+        7 to Pair("Bishop", Pair(0, 2)),
+        8 to Pair("Bishop", Pair(0, 5)),
+        9 to Pair("Pawn", Pair(1, 0)),
+        10 to Pair("Pawn", Pair(1, 1)),
+        11 to Pair("Pawn", Pair(1, 2)),
+        12 to Pair("Pawn", Pair(1, 3)),
+        13 to Pair("Pawn", Pair(1, 4)),
+        14 to Pair("Pawn", Pair(1, 5)),
+        15 to Pair("Pawn", Pair(1, 6)),
+        16 to Pair("Pawn", Pair(1, 7)),
+    )
 
-    // Переменные для выбора и перемещения фигур
+    // Переменные для обработки выбора и перемещения фигур
     var currentChosenPos: Pair<Int, Int>? = null
     var previousChosenPos: Pair<Int, Int>? = null
 
-    // Ресурсы для отображения фигур
-    private val drawableWhitePieces: MutableMap<Int, Drawable?> = mutableMapOf()
-    private val drawableBlackPieces: MutableMap<Int, Drawable?> = mutableMapOf()
+    // Drawable ресурсы для фигур
+    private val drawableWhitePieces: MutableMap<Int, Drawable?> = mutableMapOf(
+        -1 to AppCompatResources.getDrawable(context, R.drawable.chess_klt60),
+        -2 to AppCompatResources.getDrawable(context, R.drawable.chess_qlt60),
+        -3 to AppCompatResources.getDrawable(context, R.drawable.chess_rlt60),
+        -4 to AppCompatResources.getDrawable(context, R.drawable.chess_rlt60),
+        -5 to AppCompatResources.getDrawable(context, R.drawable.chess_nlt60),
+        -6 to AppCompatResources.getDrawable(context, R.drawable.chess_nlt60),
+        -7 to AppCompatResources.getDrawable(context, R.drawable.chess_blt60),
+        -8 to AppCompatResources.getDrawable(context, R.drawable.chess_blt60),
+        -9 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60),
+        -10 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60),
+        -11 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60),
+        -12 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60),
+        -13 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60),
+        -14 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60),
+        -15 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60),
+        -16 to AppCompatResources.getDrawable(context, R.drawable.chess_plt60))
+
+    private val drawableBlackPieces: MutableMap<Int, Drawable?> = mutableMapOf(
+        1 to AppCompatResources.getDrawable(context, R.drawable.chess_kdt60),
+        2 to AppCompatResources.getDrawable(context, R.drawable.chess_qdt60),
+        3 to AppCompatResources.getDrawable(context, R.drawable.chess_rdt60),
+        4 to AppCompatResources.getDrawable(context, R.drawable.chess_rdt60),
+        5 to AppCompatResources.getDrawable(context, R.drawable.chess_ndt60),
+        6 to AppCompatResources.getDrawable(context, R.drawable.chess_ndt60),
+        7 to AppCompatResources.getDrawable(context, R.drawable.chess_bdt60),
+        8 to AppCompatResources.getDrawable(context, R.drawable.chess_bdt60),
+        9 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60),
+        10 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60),
+        11 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60),
+        12 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60),
+        13 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60),
+        14 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60),
+        15 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60),
+        16 to AppCompatResources.getDrawable(context, R.drawable.chess_pdt60))
 
     init {
-        // Получаем доступ к атрибутам, определенным в XML
+        // Получение доступа к атрибутам, определенным в xml
         context.theme.obtainStyledAttributes(attrs, R.styleable.ChessboardView, 0, 0).apply {
             try {
                 brightColor = getColor(R.styleable.ChessboardView_brightColor, Color.WHITE)
-                darkColor = getColor(R.styleable.ChessboardView_darkColor, Color.BLACK)
+                darkColor = getColor(R.styleable.ChessboardView_darkColor, Color.LTGRAY)
             }
             finally {
                 recycle()
@@ -51,7 +118,7 @@ class ChessboardView(context: Context, attrs: AttributeSet): View(context, attrs
         }
     }
 
-    // Определяем кисти для отрисовки элементов
+    // Определение Paint для элементов рисования
     private val darkPaint = Paint(ANTI_ALIAS_FLAG).apply {
         color = ContextCompat.getColor(context, R.color.darkSquare)
         style = Paint.Style.FILL
@@ -72,12 +139,12 @@ class ChessboardView(context: Context, attrs: AttributeSet): View(context, attrs
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        delta = measuredWidth / 8
+        delta = measuredWidth/8
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
 
     private fun getHostActivity(): AppCompatActivity? {
-        // Вспомогательный метод для доступа к родительской активности
+        // Вспомогательный метод для получения доступа к родительской активности
         var hostContext = context
 
         while (hostContext is ContextWrapper) {
@@ -91,29 +158,29 @@ class ChessboardView(context: Context, attrs: AttributeSet): View(context, attrs
 
     // Вспомогательные функции для рисования графики
     private fun drawBoard(canvas: Canvas) {
-        // Рисуем квадраты шахматной доски
+        // Рисование клеток шахматной доски
         for (i in (1..8)) {
             for (j in (1..8)) {
-                if ((i + j) % 2 == 0) canvas.drawRect(((i - 1) * delta).toFloat(),
-                    ((j - 1) * delta).toFloat(), (i * delta).toFloat(), (j * delta).toFloat(), brightPaint)
-                else canvas.drawRect(((i - 1) * delta).toFloat(),
-                    ((j - 1) * delta).toFloat(), (i * delta).toFloat(), (j * delta).toFloat(), darkPaint)
+                if ((i+j).rem(2) == 0) canvas.drawRect(((i-1)*delta).toFloat(),
+                    ((j-1)*delta).toFloat(), (i*delta).toFloat(), (j*delta).toFloat(), brightPaint)
+                else canvas.drawRect(((i-1)*delta).toFloat(),
+                    ((j-1)*delta).toFloat(), (i*delta).toFloat(), (j*delta).toFloat(), darkPaint)
             }
         }
     }
 
     private fun drawSelection(canvas: Canvas) {
-        // Рисуем специальный квадрат для выбранной фигуры
+        // Рисование специальной клетки для выбранной фигуры
         canvas.drawRect(selectedSquareBounds, selectedPaint)
 
-        // Рисуем специальные квадраты для доступных позиций для перемещения
+        // Рисование специальных клеток для доступных позиций для перемещения
         for (bounds in availableMovesBounds) {
             canvas.drawRect(bounds, selectedPaint)
         }
     }
 
     private fun drawPieces(canvas: Canvas) {
-        // Рисуем белые фигуры
+        // Рисование белых фигур
         for ((pieceNum, piece) in whitePlayerPieces) {
             val piecePos = piece.second
             drawableWhitePieces[pieceNum]?.apply {
@@ -122,7 +189,7 @@ class ChessboardView(context: Context, attrs: AttributeSet): View(context, attrs
             }
         }
 
-        // Рисуем черные фигуры
+        // Рисование черных фигур
         for ((pieceNum, piece) in blackPlayerPieces) {
             val piecePos = piece.second
             drawableBlackPieces[pieceNum]?.apply {
@@ -151,30 +218,30 @@ class ChessboardView(context: Context, attrs: AttributeSet): View(context, attrs
         return true
     }
 
-    // Функция для получения позиции квадрата в координатах доски из координат касания
+    // Функция для получения позиции клетки в координатах доски из координат касания
     private fun getPositionOfSquare(x: Float, y: Float) {
-        // Получаем номер строки и столбца для выбранного квадрата
-        val rowPositionOfSquare = (y / delta).toInt()
-        val colPositionOfSquare = (x / delta).toInt()
+        // Получение номера строки и столбца для выбранной клетки
+        val rowPositionOfSquare = (y/delta).toInt()
+        val colPositionOfSquare = (x/delta).toInt()
 
-        // Сохраняем координаты последней выбранной позиции
+        // Сохранение координат последней выбранной позиции
         previousChosenPos = currentChosenPos
-        // Сохраняем координаты выбранной позиции на шахматной доске
+        // Сохранение координат выбранной позиции на шахматной доске
         currentChosenPos = Pair(rowPositionOfSquare, colPositionOfSquare)
         println("Current pos: " + currentChosenPos.toString())
         println("Previous pos: " + previousChosenPos.toString())
     }
 
     private fun transformToRect(xPositionOfSquare: Int, yPositionOfSquare: Int): Rect {
-        val yBottom = (yPositionOfSquare + 1) * delta
-        val xLeft = (xPositionOfSquare) * delta
-        val xRight = (xPositionOfSquare + 1) * delta
-        val yTop = (yPositionOfSquare) * delta
+        val yBottom = (yPositionOfSquare+1)*delta
+        val xLeft = (xPositionOfSquare)*delta
+        val xRight = (xPositionOfSquare+1)*delta
+        val yTop = (yPositionOfSquare)*delta
 
-        return Rect(xLeft, yTop, xRight, yBottom)
+        return Rect(xLeft,yTop, xRight, yBottom)
     }
 
-    // Делаем выбранный квадрат с данными координатами выбранным
+    // Сделать выбранной клетку с заданными координатами
     fun displaySelection() {
         selectedSquareBounds = transformToRect(currentChosenPos!!.second, currentChosenPos!!.first)
         this.invalidate()

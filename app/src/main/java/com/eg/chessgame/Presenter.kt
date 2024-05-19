@@ -8,8 +8,8 @@ class Presenter(private val view: ChessboardInterface) {
 
     // Переменная для отслеживания состояния шаха
     // 0: нет шаха
-    // 1: белый должен передвинуть своего короля
-    // -1: черный должен передвинуть своего короля
+    // 1: белый король под шахом
+    // -1: черный дкороль под шахом
     private var isCheck = 0
 
     private var lastAvailableMoves: List<Pair<Int, Int>> = listOf()
