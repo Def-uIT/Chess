@@ -6,10 +6,10 @@ class Presenter(private val view: ChessboardInterface) {
     
     private var game = Game()
 
-    // Variable of check state
-    // 0: no check
-    // 1: white has to move his king
-    // -1: black has to move his king
+    // Переменная для отслеживания состояния шаха
+    // 0: нет шаха
+    // 1: белый должен передвинуть своего короля
+    // -1: черный должен передвинуть своего короля
     private var isCheck = 0
 
     private var lastAvailableMoves: List<Pair<Int, Int>> = listOf()
@@ -20,9 +20,9 @@ class Presenter(private val view: ChessboardInterface) {
     }
 
     fun restartGame() {
-        // Init new Game object with initial state of the game
+        // Создание нового объекта игры с начальным состоянием
         game = Game()
-        // ANd redraw pieces on the board
+        // Перерисовка фигур на доске
         view.redrawPieces(game.playerWhite.pieces, game.playerBlack.pieces)
     }
 
@@ -36,14 +36,12 @@ class Presenter(private val view: ChessboardInterface) {
         val pieceNum = game.board[currentPosition!!.first][currentPosition.second]
         val currentPlayerNum = game.currentPlayerColor
 
-         /* Handle the logic:
-            -if chosen piece of current player's side -> tell view to select it and
-             display available moves
-
-            -if chosen pos is one of the available moves for previous pos and previous
-            selection is piece of current player -> make move for piece on previous pos
-
-            -else -> clear all selections and list of available positions */
+        /* Обработка логики:
+           - если выбранная фигура принадлежит текущему игроку, сообщить представлению, чтобы оно её выбрало
+             и показало доступные ходы
+           - если выбранная позиция является одним из доступных ходов для предыдущей позиции, и предыдущая
+             выбранная фигура принадлежит текущему игроку, сделать ход этой фигурой
+           - в противном случае очистить все выбранные позиции и список доступных ходов */
         when {
             (pieceNum.sign == currentPlayerNum) -> selectPieceToMove(pieceNum, currentPlayerNum)
             (lastAvailableMoves.contains(currentPosition)
@@ -58,36 +56,35 @@ class Presenter(private val view: ChessboardInterface) {
     }
 
     private fun movePiece(piecePos: Pair<Int, Int>, movePos: Pair<Int, Int>) {
-        // If game is already finished, just display winner (done to prevent moving pieces after game finished, but before restart)
-        // else make move and display winner if there is
+        // Если игра уже завершена, просто отобразить победителя
+        // Иначе сделать ход и отобразить победителя, если он есть
         if (game.isEnd != 0) {
             view.displayWinner(game.isEnd)
         } else {
-            // Tell game to make move for current player
+            // Сделать ход для текущего игрока
             game.makeMove(piecePos, movePos)
-            // Clear available moves
+            // Очистить доступные ходы
             lastAvailableMoves = listOf()
-            // Tell View to clear selection and available moves on board
+            // Очистить выбор и доступные ходы на доске
             view.clearSelection()
-            // Tell View to redraw pieces on board
+            // Перерисовать фигуры на доске
             view.redrawPieces(game.playerWhite.pieces, game.playerBlack.pieces)
 
-            // If king of any player is in check- display a message
+            // Если король какого-либо игрока находится под шахом, отобразить сообщение
             if (game.isCheck[-1] == true) {
                 view.displayCheck(-1)
             }
             if (game.isCheck[1] == true) {
                 view.displayCheck(1)
             }
+            // Если игра завершена, отобразить победителя
             if (game.isEnd != 0) {
                 view.displayWinner(game.isEnd)
             }
         }
     }
 
-
-
-    // Interface for interaction with View(Activity)
+    // Интерфейс для взаимодействия с представлением (Activity)
     interface ChessboardInterface {
         fun displayAvailableMoves(movesCoordinates: List<Pair<Int, Int>>)
         fun sendInputToPresenter(currentPosition: Pair<Int, Int>?, previousPosition: Pair<Int, Int>?)
