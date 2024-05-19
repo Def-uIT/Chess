@@ -1,11 +1,8 @@
 package com.eg.chessgame
 
+// Класс, который реализует саму игру, хранит экземпляры игровых объектов,
+// отслеживает текущего игрока и состояние победы
 class Game {
-    /*
-    * Class that implements the game itself, stores it's instances of game objects,
-    * keeps track of current player and winning state
-    */
-
     val gameUtils = GameUtils()
     private val chessObjects = gameUtils.initGame()
     val capturedPiecesQueue: capturedQueue = mutableListOf()
@@ -18,9 +15,9 @@ class Game {
 
     var isEnd = 0
     val isCheck = mutableMapOf<Int, Boolean>(-1 to false, 1 to false)
-    var currentPlayerColor = -1  // first turn is white's turn
+    var currentPlayerColor = -1  // первый ход принадлежит белым
 
-    // Variables to store values of positions of the last move to implement Cancellation of that move
+    // Переменные для хранения значений позиций последнего хода для реализации отмены этого хода
     private var lastMoveCurrentPos: Pair<Int, Int>? = null
     private var lastMovePreviousPos: Pair<Int, Int>? = null
 
@@ -28,10 +25,10 @@ class Game {
         gameUtils.updateAllAvailableMoves(players, board)
     }
 
+    // Отмена хода
     fun cancelMove() {
         if (lastMovePreviousPos != null && lastMoveCurrentPos != null) {
-            println("previoues pos: $lastMovePreviousPos, current pos: $lastMoveCurrentPos")
-            // Change player back
+            // Смена текущего игрока обратно
             currentPlayerColor *= -1
             gameUtils.cancelMove(players,
                 currentPlayerColor,
@@ -42,40 +39,33 @@ class Game {
 
             gameUtils.updateAllAvailableMoves(players, board)
             isEnd = gameUtils.checkEnd(players)
-            // reset these variables to not be able cancel move if it's invalid
+            // Сброс этих переменных, чтобы не было возможности отменить ход, если он недопустим
             lastMoveCurrentPos = null
             lastMovePreviousPos = null
         }
     }
 
+    // Выполнение хода
     fun makeMove(piecePos: Pair<Int, Int>, movePos: Pair<Int, Int>) {
         gameUtils.makeMove(players, currentPlayerColor, board, piecePos, movePos, capturedPiecesQueue)
         gameUtils.updateAllAvailableMoves(players, board)
 
-        for (p in players[-1*currentPlayerColor]!!.availableMoves) {
-            println("$p")
-        }
-
-        // Check if check for both players
+        // Проверка на шах для обоих игроков
         isCheck[currentPlayerColor] = gameUtils.isCheck(players[currentPlayerColor]!!.pieces[currentPlayerColor]!!.second, players[-1*currentPlayerColor] as Player)
         isCheck[-1*currentPlayerColor] = gameUtils.isCheck(players[-1*currentPlayerColor]!!.pieces[-1*currentPlayerColor]!!.second, players[currentPlayerColor] as Player)
 
-        for (k in isCheck) {
-            println("$k")
-        }
-
-        // Check if player made invalid move and open his king for opponent's attack
+        // Проверка на недопустимый ход игрока и открытие его короля для атаки оппонента
         if (isCheck[currentPlayerColor] == true) {
             gameUtils.cancelMove(players, currentPlayerColor, board, movePos, piecePos, capturedPiecesQueue)
             gameUtils.updateAllAvailableMoves(players, board)
         }
         else {
-            // And assign them only in case if move is valid
+            // Присваивание значений переменным только в случае допустимого хода
             lastMoveCurrentPos = movePos
             lastMovePreviousPos = piecePos
-            // Change current player to opponent
+            // Смена текущего игрока на оппонента
             currentPlayerColor *= -1
-            // Update winning state
+            // Обновление состояния победы
             isEnd = gameUtils.checkEnd(players)
         }
     }
