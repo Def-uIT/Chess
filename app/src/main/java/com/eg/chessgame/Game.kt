@@ -39,7 +39,7 @@ class Game {
 
             gameUtils.updateAllAvailableMoves(players, board)
             isEnd = gameUtils.checkEnd(players)
-            // Сброс этих переменных, чтобы не было возможности отменить ход, если он недопустим
+            // Сброc переменных, которые хранят последнюю позицию при окончании игры
             lastMoveCurrentPos = null
             lastMovePreviousPos = null
         }
