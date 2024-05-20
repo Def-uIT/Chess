@@ -50,11 +50,11 @@ class Game {
         gameUtils.makeMove(players, currentPlayerColor, board, piecePos, movePos, capturedPiecesQueue)
         gameUtils.updateAllAvailableMoves(players, board)
 
-        // Проверка на шах для обоих игроков
+        // Проверка на шах для игроков
         isCheck[currentPlayerColor] = gameUtils.isCheck(players[currentPlayerColor]!!.pieces[currentPlayerColor]!!.second, players[-1*currentPlayerColor] as Player)
         isCheck[-1*currentPlayerColor] = gameUtils.isCheck(players[-1*currentPlayerColor]!!.pieces[-1*currentPlayerColor]!!.second, players[currentPlayerColor] as Player)
 
-        // Проверка на недопустимый ход игрока и открытие его короля для атаки оппонента
+        // Проверка на недопустимый ход игрока, если происходит открытие его короля для атаки оппонента
         if (isCheck[currentPlayerColor] == true) {
             gameUtils.cancelMove(players, currentPlayerColor, board, movePos, piecePos, capturedPiecesQueue)
             gameUtils.updateAllAvailableMoves(players, board)

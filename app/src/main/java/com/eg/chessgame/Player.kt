@@ -6,7 +6,6 @@ class Player(var color: Int) {
     // -1 = белый, 1 = черный
     private val initialRowPos = if (color == 1) 0 else 7
 
-    // TODO: создать объект Piece и заменить все пары в картах на него
 
     // Номер фигуры -> Название, Позиция
     val pieces: MutableMap<Int, Pair<String, Pair<Int, Int>>> = mutableMapOf(

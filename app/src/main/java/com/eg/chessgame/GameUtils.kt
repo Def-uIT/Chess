@@ -30,14 +30,15 @@ class GameUtils {
         return currentPlayer!!.availableMoves[pieceNum]!!
     }
 
+   //Функция отвечающая за производство хода
     fun makeMove(
         players: Map<Int, Player>,
         currentPlayer: Int,
         board: Array<IntArray>,
         currentPos: Pair<Int, Int>,
         movePos: Pair<Int, Int>,
-        capturedPiecesQueue: capturedQueue
-    ) {
+        capturedPiecesQueue: capturedQueue)
+    {
         val otherPlayer = players[currentPlayer * -1] as Player
 
         val pieceNum = board[currentPos.first][currentPos.second] // номер выбранной фигуры
@@ -72,7 +73,7 @@ class GameUtils {
         println("piece num to cancel: $pieceNum")
         val pieceName = players[currentPlayer]?.pieces?.get(pieceNum)!!.first
 
-        // Вернуть захваченную фигуру на доску или просто удалить текущую фигуру с этой позиции
+        // Вернуть захваченную фигуру на доску или удалить текущую фигуру с этой позиции
         board[previousPos.first][previousPos.second] = pieceNum
         board[currentPos.first][currentPos.second] =
             if (capturedPiecesQueue.isNotEmpty() && capturedPiecesQueue.last().third == currentPos) {
@@ -92,6 +93,7 @@ class GameUtils {
     }
 
     fun isCheck(kingPos: Pair<Int, Int>, attacker: Player): Boolean {
+        // Функция отвечающая за постановку шаха
         val attackerPossibleMoves = attacker.availableMoves
         return (attackerPossibleMoves.values.any { list -> list.contains(kingPos) })
     }
@@ -104,7 +106,7 @@ class GameUtils {
     }
 
     fun checkEnd(players: Map<Int, Player>): Int {
-        // вернуть цвет победителя если мат или 0 в противном случае
+        // Вернуть цвет победителя если мат или 0 в противном случае
         return when {
             isCheckmate(players[1] as Player, players[-1] as Player) -> -1
             isCheckmate(players[-1] as Player, players[1] as Player) -> 1
@@ -116,7 +118,7 @@ class GameUtils {
         val playerBlack = Player(1)
         val playerWhite = Player(-1)
         val board = initBoard(arrayOf(playerWhite, playerBlack))
-        // Очередь захваченных фигур для реализации отмены хода
+        // Очередь захваченных фигур для отмены хода
 
         return Triple(playerBlack, playerWhite, board)
     }
