@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/cancel_move"
-        android:title="Cancel Move"/>
+        android:title="Отмена хода"/>
     <item
         android:id="@+id/restart_game"
-        android:title="Restart Game"/>
+        android:title="Перезапустить игру"/>
 </menu>
